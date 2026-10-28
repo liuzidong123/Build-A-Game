@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>中国象棋 · 双人对弈与电脑对战</title>
+<meta name="description" content="标准中国象棋：红先、楚河汉界与九宫，车马炮象士将兵全规则，含飞将、困毙与重复局面判和。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">帥</span>
+      <div>
+        <h1>中国象棋</h1>
+        <p class="brand-sub">红先 · 将死取胜 · 双人同屏 / 人机对战</p>
+      </div>
+    </div>
+    <div class="turn-chip" id="statusChip">
+      <span class="turn-dot" id="turnDot" aria-hidden="true"></span>
+      <span id="statusText">红方走棋</span>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="board-area">
+      <div class="board-frame">
+        <div class="board" id="board" role="grid" aria-label="中国象棋棋盘，点棋子选中，再点交叉点落子">
+          <svg class="grid" id="grid" viewBox="0 0 900 1000" aria-hidden="true" preserveAspectRatio="none"></svg>
+          <div class="river" aria-hidden="true"><span>楚 河</span><span>漢 界</span></div>
+          <div class="pieces" id="pieces"></div>
+        </div>
+        <div class="result" id="result" hidden>
+          <div class="result-card">
+            <p class="result-kicker" id="resultKicker">本局结束</p>
+            <h2 class="result-title" id="resultTitle">红方胜</h2>
+            <p class="result-copy" id="resultCopy"></p>
+            <div class="result-actions">
+              <button class="btn primary" id="againBtn" type="button">再来一局</button>
+              <button class="btn" id="reviewBtn" type="button">看看棋盘</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="sr-only" id="liveStatus" aria-live="polite">红方走棋</p>
+    </section>
+
+    <aside class="panel">
+      <div class="group">
+        <span class="group-label">对战模式</span>
+        <div class="seg" id="modeRow">
+          <button class="seg-btn is-on" type="button" data-mode="ai">人机对战</button>
+          <button class="seg-btn" type="button" data-mode="pvp">双人对弈</button>
+        </div>
+      </div>
+
+      <div class="group" id="sideGroup">
+        <span class="group-label">我方执子</span>
+        <div class="seg" id="sideRow">
+          <button class="seg-btn is-on" type="button" data-side="r">执红先行</button>
+          <button class="seg-btn" type="button" data-side="b">执黑后行</button>
+        </div>
+      </div>
+
+      <div class="group" id="levelGroup">
+        <span class="group-label">电脑棋力</span>
+        <div class="seg" id="levelRow">
+          <button class="seg-btn" type="button" data-level="easy">简单</button>
+          <button class="seg-btn is-on" type="button" data-level="normal">普通</button>
+          <button class="seg-btn" type="button" data-level="hard">困难</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="newBtn" type="button">新开一局</button>
+        <button class="btn" id="undoBtn" type="button">悔棋</button>
+        <button class="btn" id="flipBtn" type="button">翻转棋盘</button>
+        <button class="btn" id="resignBtn" type="button">认输</button>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <span class="group-label">棋谱</span>
+          <span class="group-note" id="moveCount">0 手</span>
+        </div>
+        <ol class="moves" id="moveList"><li class="moves-empty">还没有落子</li></ol>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <span class="group-label">被吃子</span>
+          <span class="group-note" id="materialNote">子力持平</span>
+        </div>
+        <div class="captured"><span class="cap-label">红吃</span><span class="cap-line" id="capturedR">—</span></div>
+        <div class="captured"><span class="cap-label">黑吃</span><span class="cap-line" id="capturedB">—</span></div>
+      </div>
+
+      <div class="hud">
+        <div class="hud-item"><b id="recVal">0 胜 0 和 0 负</b><span>人机战绩</span></div>
+      </div>
+
+      <p class="tip">红方先行。点自己的棋子看可走位置，再点交叉点落子；Esc 取消选择，U 悔棋。</p>
+    </aside>
+  </main>
+
+  <footer class="foot">纯前端离线运行 · 规则含蹩马腿 / 塞象眼 / 炮打隔子 / 飞将 / 困毙与重复局面判和</footer>
+</div>
+
+<script src="logic.js"></script>
+<script src="ai.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

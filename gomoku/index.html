@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10172c">
+<title>五子棋 · 人机对战与双人对战</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">五</span>
+      <div>
+        <h1>五子棋</h1>
+        <p class="brand-sub">人机对战 · 双人同屏 · 15×15</p>
+      </div>
+    </div>
+    <div class="turn-chip" id="turnChip">
+      <span class="turn-dot" id="turnDot" aria-hidden="true"></span>
+      <span id="turnText">黑棋落子</span>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="board-wrap">
+      <canvas id="board" width="720" height="720" aria-label="五子棋棋盘，点交叉点落子"></canvas>
+      <p class="sr-only" id="liveStatus" aria-live="polite">黑棋先行</p>
+    </div>
+
+    <aside class="panel">
+      <div class="group">
+        <span class="group-label">对战模式</span>
+        <div class="seg" id="modeRow">
+          <button class="seg-btn is-on" type="button" data-mode="ai">人机对战</button>
+          <button class="seg-btn" type="button" data-mode="pvp">双人对战</button>
+        </div>
+      </div>
+
+      <div class="group" id="sideGroup">
+        <span class="group-label">我方执子</span>
+        <div class="seg" id="sideRow">
+          <button class="seg-btn is-on" type="button" data-side="1">执黑先手</button>
+          <button class="seg-btn" type="button" data-side="2">执白后手</button>
+        </div>
+      </div>
+
+      <div class="group" id="levelGroup">
+        <span class="group-label">电脑棋力</span>
+        <div class="seg" id="levelRow">
+          <button class="seg-btn" type="button" data-level="easy">简单</button>
+          <button class="seg-btn is-on" type="button" data-level="normal">普通</button>
+          <button class="seg-btn" type="button" data-level="hard">困难</button>
+        </div>
+      </div>
+
+      <div class="hud">
+        <div class="hud-item"><b id="moveVal">0</b><span>手数</span></div>
+        <div class="hud-item"><b id="clockVal">00:00</b><span>用时</span></div>
+        <div class="hud-item"><b id="recordVal">0 胜 0 负</b><span>人机战绩</span></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="restartBtn" type="button">重新开始</button>
+        <button class="btn" id="undoBtn" type="button">悔棋</button>
+        <button class="btn" id="resignBtn" type="button">认输</button>
+      </div>
+
+      <p class="tip" id="tipText">横、竖、斜任意方向连成五子即胜。点交叉点落子。</p>
+    </aside>
+  </main>
+
+  <div class="result" id="result" hidden>
+    <div class="result-card">
+      <p class="result-kicker" id="resultKicker">本局结束</p>
+      <h2 class="result-title" id="resultTitle">黑棋胜</h2>
+      <p class="result-copy" id="resultCopy"></p>
+      <div class="result-actions">
+        <button class="btn primary" id="againBtn" type="button">再来一局</button>
+        <button class="btn" id="closeResultBtn" type="button">看看棋盘</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">纯前端离线运行 · 支持触屏与鼠标</footer>
+</div>
+
+<script src="logic.js"></script>
+<script src="ai.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

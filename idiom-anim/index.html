@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#131a3a">
+<title>成语动图猜猜猜 · 15 分钟挑战</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">谜</span>
+      <div>
+        <h1>成语动图猜猜猜</h1>
+        <p class="brand-sub">看图拼成语 · 15 分钟积分赛</p>
+      </div>
+    </div>
+    <div class="hud" id="hud" hidden>
+      <div class="hud-item">
+        <span class="hud-label">得分</span>
+        <strong class="hud-value" id="scoreVal" aria-live="polite">0</strong>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">剩余</span>
+        <strong class="hud-value hud-clock" id="clockVal">15:00</strong>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">连对</span>
+        <strong class="hud-value" id="streakVal">0</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- 开始页 -->
+  <section class="screen" id="startScreen">
+    <div class="panel hero">
+      <div class="hero-art" aria-hidden="true">
+        <span class="art-tile a1">🐴</span>
+        <span class="art-tile a2">🎯</span>
+        <span class="art-tile a3">🏆</span>
+        <span class="art-tile a4">🎉</span>
+      </div>
+      <h2>每个方块都在动，拼起来是一个成语</h2>
+      <p class="hero-copy">系统随机抽取成语，把每个字（或谐音字）画成会动的图块。猜中 <b>+1</b> 分，猜错 <b>-1</b> 分，15 分钟结束时分数最高者胜。</p>
+      <ul class="rules">
+        <li><b>+1</b> 答对一题；<b>-1</b> 答错或直接看答案</li>
+        <li>同一题可以反复猜，每次猜错都扣 1 分</li>
+        <li>满分状态可连对攒连击，答错清零</li>
+        <li>本地排行榜按得分排名，同分看答对题数</li>
+      </ul>
+      <label class="field">
+        <span>你的昵称</span>
+        <input id="nameInput" type="text" maxlength="12" placeholder="例如：猜词小王子" autocomplete="off">
+      </label>
+      <button class="btn btn-primary btn-lg" id="startBtn" type="button">开始 15 分钟挑战</button>
+      <p class="hint-line" id="boardHint">还没有记录，本局将成为第一个成绩。</p>
+    </div>
+    <div class="panel">
+      <h3 class="panel-title">排行榜 · 历次 15 分钟成绩</h3>
+      <div class="board" id="startBoard"></div>
+    </div>
+  </section>
+
+  <!-- 游戏中 -->
+  <section class="screen" id="playScreen" hidden>
+    <div class="panel play">
+      <div class="qmeta">
+        <span id="qIndex">第 1 题</span>
+        <span class="qmeta-dot"></span>
+        <span id="qLen">4 个字</span>
+      </div>
+
+      <div class="tiles" id="tiles" aria-label="成语图块"></div>
+
+      <div class="slots" id="slots" aria-label="答案字数"></div>
+
+      <form class="guess" id="guessForm" autocomplete="off">
+        <input id="guessInput" type="text" inputmode="text" maxlength="12"
+               placeholder="输入你猜到的成语" aria-label="输入成语" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn btn-primary" id="submitBtn" type="submit">确认</button>
+      </form>
+
+      <div class="guesslog" id="guessLog" aria-live="polite"></div>
+
+      <div class="play-actions">
+        <button class="btn btn-ghost" id="revealBtn" type="button">看答案（-1）</button>
+        <button class="btn btn-ghost" id="pauseBtn" type="button">暂停</button>
+        <button class="btn btn-ghost" id="endBtn" type="button">结束本局</button>
+      </div>
+    </div>
+    <div class="panel tip">
+      <span class="tip-key">提示</span>
+      图块之间没有空格，按顺序念出来；碰到念不通的字，试试点它的谐音。
+    </div>
+  </section>
+
+  <!-- 结算 -->
+  <section class="screen" id="overScreen" hidden>
+    <div class="panel result">
+      <p class="result-kicker">本局结束</p>
+      <p class="result-score"><span id="finalScore">0</span><small>分</small></p>
+      <p class="result-rank" id="finalRank">—</p>
+      <div class="result-grid">
+        <div><b id="finalCorrect">0</b><span>答对</span></div>
+        <div><b id="finalWrong">0</b><span>答错</span></div>
+        <div><b id="finalAcc">0%</b><span>正确率</span></div>
+        <div><b id="finalStreak">0</b><span>最佳连对</span></div>
+      </div>
+      <label class="field">
+        <span>记录到排行榜</span>
+        <div class="field-row">
+          <input id="saveName" type="text" maxlength="12" placeholder="昵称" autocomplete="off">
+          <button class="btn btn-primary" id="saveBtn" type="button">提交成绩</button>
+        </div>
+      </label>
+      <div class="board" id="overBoard"></div>
+      <div class="result-actions">
+        <button class="btn btn-primary" id="restartBtn" type="button">再来一局</button>
+        <button class="btn btn-ghost" id="homeBtn" type="button">回到首页</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay" id="pauseOverlay" hidden>
+    <div class="overlay-card">
+      <h3>已暂停</h3>
+      <p>倒计时停住了，回来继续。</p>
+      <button class="btn btn-primary" id="resumeBtn" type="button">继续游戏</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+  <footer class="foot">纯前端离线运行 · 数据只存在本机浏览器</footer>
+</div>
+
+<script src="data.js"></script>
+<script src="logic.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

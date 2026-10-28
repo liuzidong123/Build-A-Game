@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1330">
+  <title>游戏中心</title>
+  <link rel="stylesheet" href="center.css">
+</head>
+<body>
+  <div class="glow" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-top">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">🎮</span>
+        <div>
+          <h1>游戏中心</h1>
+          <p class="brand-sub">自动扫描 apps/games/*/index.html</p>
+        </div>
+      </div>
+      <span class="source-badge" id="sourceBadge" data-mode="local" title="统计来源">本机统计</span>
+    </div>
+
+    <div class="toolbar">
+      <label class="search">
+        <span aria-hidden="true">🔍</span>
+        <input id="search" type="search" placeholder="搜索游戏名、标签" autocomplete="off" aria-label="搜索游戏">
+      </label>
+      <select id="sort" aria-label="排序方式">
+        <option value="hot">按热度</option>
+        <option value="likes">按点赞</option>
+        <option value="new">按最新</option>
+        <option value="name">按名称</option>
+      </select>
+      <div class="view-switch" id="viewSwitch" role="group" aria-label="展示方式">
+        <button class="seg-btn is-on" type="button" data-view="grid" title="九宫格卡片" aria-pressed="true">九宫格</button>
+        <button class="seg-btn" type="button" data-view="list" title="表格列出详情" aria-pressed="false">表格</button>
+      </div>
+      <button class="btn ghost" id="refresh" type="button">刷新</button>
+    </div>
+
+    <div class="filters" id="filters" role="group" aria-label="筛选">
+      <button class="chip is-on" data-filter="all" type="button">全部 <span id="countAll">0</span></button>
+      <button class="chip" data-filter="fav" type="button">已收藏</button>
+      <button class="chip" data-filter="played" type="button">玩过</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="board" id="board" aria-live="polite"></section>
+    <section class="empty" id="empty" hidden>
+      <div class="empty-icon" aria-hidden="true">📁</div>
+      <h2>还没有扫描到游戏</h2>
+      <p>把网页游戏放进 <code>apps/games/&lt;游戏名&gt;/index.html</code>，点刷新即可出现在看板上。</p>
+      <p class="empty-hint">可选：在同目录放 <code>game.json</code> 自定义标题、封面和标签。</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span id="footNote">数据保存在本机浏览器</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <span>支持 <code>game.json</code> 元数据</span>
+  </footer>
+
+  <div class="player" id="player" hidden>
+    <div class="player-shell" id="playerShell">
+      <header class="player-bar">
+        <div class="player-meta">
+          <strong id="playerTitle">游戏</strong>
+          <span class="player-clock" id="playerClock">00:00</span>
+        </div>
+        <div class="player-actions">
+          <button class="btn small" id="playerFull" type="button">全屏</button>
+          <button class="btn small primary" id="playerClose" type="button">结束游戏</button>
+        </div>
+      </header>
+      <iframe id="playerFrame" title="游戏画面" allow="fullscreen; autoplay; gamepad" referrerpolicy="no-referrer"></iframe>
+      <div class="player-tip">游玩时长计入该游戏的累计时长，关闭窗口即结算</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="config.js"></script>
+  <script src="games.js"></script>
+  <script src="center.js"></script>
+</body>
+</html>

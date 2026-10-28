@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07181c">
+<meta name="description" content="敲对荷叶上的字母，帮小青蛙跳过河流：连击加分、金币道具、SPACE 大荷叶冲刺，支持初级/中级/高级三档难度。">
+<title>青蛙过河 · 打字闯关</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">🐸</span>
+      <div>
+        <h1>青蛙过河</h1>
+        <p class="brand-sub">敲字母 · 跳荷叶 · 渡河收集金币</p>
+      </div>
+    </div>
+    <div class="chips">
+      <span class="chip" id="levelChip">第 1 关</span>
+      <span class="chip gold" id="recordChip">最高 0</span>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="pond">
+      <div class="hud-bar">
+        <div class="hud">
+          <div class="hud-cell"><span>分数</span><b id="scoreVal">0</b></div>
+          <div class="hud-cell"><span>倍率</span><b id="comboVal">×1.0</b></div>
+          <div class="hud-cell"><span>金币</span><b id="coinVal">0</b></div>
+          <div class="hud-cell"><span>生命</span><b id="lifeVal" class="lives">❤❤❤</b></div>
+        </div>
+        <div class="timebar" id="timebar"><i id="timeFill"></i></div>
+      </div>
+
+      <canvas id="river" width="760" height="760" aria-label="青蛙过河游戏画面：敲下荷叶上的字母让小青蛙跳到对岸"></canvas>
+
+      <div class="prompt" id="promptBar">
+        <span class="prompt-label" id="promptLabel">敲下荷叶上的字母</span>
+        <span class="prompt-keys" id="promptKeys"></span>
+      </div>
+
+      <div class="banner" id="banner" hidden><span id="bannerText"></span></div>
+      <p class="sr-only" id="liveStatus" aria-live="polite"></p>
+    </div>
+
+    <aside class="panel">
+      <div class="stat-grid">
+        <div><b id="bestVal">0</b><span>最高分</span></div>
+        <div><b id="bestComboVal">0</b><span>最高连击</span></div>
+        <div><b id="accuracyVal">100%</b><span>正确率</span></div>
+        <div><b id="progressVal">0%</b><span>渡河进度</span></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="pauseBtn" type="button" hidden>暂停</button>
+        <button class="btn" id="restartBtn" type="button" hidden>重开本关</button>
+        <button class="btn" id="homeBtn" type="button">换难度</button>
+      </div>
+
+      <div class="legend">
+        <p><b class="ico gold">●</b> 金币荷叶：+50 分，计入金币数</p>
+        <p><b class="ico">⏱</b> 时间沙漏 +5s · <b class="ico">🛡</b> 护盾挡一次失误 · <b class="ico">❄</b> 缓流 8s</p>
+        <p><b class="ico">SPACE</b> 大荷叶：一次跳两行，分数 ×3</p>
+        <p><b class="ico">← →</b> 选目标 · <b class="ico">↑</b> 慢慢挪过去（扣 2 秒、不给连击）</p>
+      </div>
+
+      <p class="tip" id="tipText">按错字母会掉时间，时间见底就落水。落水三次本局结束。</p>
+    </aside>
+  </main>
+
+  <footer class="foot">纯前端离线运行 · 键盘为唯一主角</footer>
+</div>
+
+<section class="overlay" id="startPanel">
+  <div class="sheet">
+    <p class="kicker">打字练习 · 街机闯关</p>
+    <h2 class="sheet-title">青蛙过河</h2>
+    <p class="lead">河面上一片片荷叶各印着一个字母。敲对字母，小青蛙就踩着它往前跳一步，跳到对岸就算过河。</p>
+
+    <ol class="rules">
+      <li><b>只打下一行</b>：亮起来的荷叶才有效，敲对即前进。</li>
+      <li><b>敲错要付代价</b>：每次掉时间，时间见底会落水，三次落水结束。</li>
+      <li><b>连击换倍率</b>：连续正确最高 2 倍分；金币 +50；SPACE 大荷叶一跳两行。</li>
+    </ol>
+
+    <div class="field">
+      <span class="field-label">难度</span>
+      <div class="seg" id="diffRow">
+        <button class="seg-btn" type="button" data-diff="easy">初级</button>
+        <button class="seg-btn is-on" type="button" data-diff="normal">中级</button>
+        <button class="seg-btn" type="button" data-diff="hard">高级</button>
+      </div>
+      <p class="field-hint" id="diffHint">全字母混合，节奏加快</p>
+    </div>
+
+    <div class="field">
+      <span class="field-label">青蛙配色</span>
+      <div class="skins" id="skinRow">
+        <button class="skin lime is-on" type="button" data-skin="lime" aria-label="翠绿青蛙"></button>
+        <button class="skin cyan" type="button" data-skin="cyan" aria-label="青蓝青蛙"></button>
+        <button class="skin gold" type="button" data-skin="gold" aria-label="金色青蛙"></button>
+      </div>
+    </div>
+
+    <button class="btn primary big" id="startBtn" type="button">开始过河</button>
+    <p class="meta" id="startMeta">最高分 0 · 已渡河 0 次</p>
+    <p class="meta dim">按 <kbd>Enter</kbd> 开始 · 游戏中按 <kbd>Esc</kbd> 暂停</p>
+  </div>
+</section>
+
+<section class="overlay" id="result" hidden>
+  <div class="sheet">
+    <p class="kicker" id="resultKicker">本局结束</p>
+    <h2 class="sheet-title" id="resultTitle">落水了</h2>
+    <p class="score-row"><span id="resultScore">0</span><small>分</small></p>
+    <p class="result-copy" id="resultCopy"></p>
+    <div class="result-grid" id="resultGrid"></div>
+    <div class="badges" id="resultBadges"></div>
+    <div class="row">
+      <button class="btn primary" id="nextBtn" type="button" hidden>进入下一关</button>
+      <button class="btn" id="againBtn" type="button">再来一次</button>
+      <button class="btn ghost" id="toHomeBtn" type="button">换难度</button>
+    </div>
+  </div>
+</section>
+
+<section class="overlay" id="pausePanel" hidden>
+  <div class="sheet small">
+    <h2 class="sheet-title">暂停中</h2>
+    <p class="lead">深呼吸，回来时荷叶还在这儿。</p>
+    <div class="row">
+      <button class="btn primary" id="resumeBtn" type="button">继续（Esc）</button>
+      <button class="btn ghost" id="quitBtn" type="button">回到设置</button>
+    </div>
+  </div>
+</section>
+
+<script src="logic.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

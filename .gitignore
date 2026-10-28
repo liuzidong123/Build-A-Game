@@ -1,0 +1,17 @@
+# 运行时数据（stats_server.py 落盘目录）
+.stats/
+*.stats.json
+stats.json.bak
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 依赖与日志
+node_modules/
+*.log
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini

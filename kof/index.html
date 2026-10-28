@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>拳皇 · KOF</title>
+  <meta name="description" content="草薙京登场的横版格斗：轻拳重腿、防御反击、三局两胜，人机或同屏双人对战。" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="back" href="../index.html">← 游戏中心</a>
+      <div class="brand">
+        <h1>拳皇 <span>KOF</span></h1>
+        <p>横版格斗 · 三局两胜</p>
+      </div>
+      <p class="hint">A/D 移动 · W 跳 · J 轻拳 · K 重腿 · L 防御 · Esc 暂停</p>
+    </header>
+
+    <div class="stage">
+      <div class="arena" id="arena">
+        <canvas id="screen" width="1280" height="720"
+          aria-label="拳皇对战画面：左右两名格斗家在水岸街景中对战"></canvas>
+
+        <div class="hud">
+          <div class="side">
+            <div class="name-row">
+              <b class="p-name">草薙 京</b>
+              <span class="combo" id="combo0"></span>
+            </div>
+            <div class="hp"><i class="hp-ghost" id="hpGhost0"></i><i class="hp-fill" id="hp0"></i></div>
+            <div class="pips" id="pips0"><em></em><em></em></div>
+          </div>
+
+          <div class="timer" id="timer">60</div>
+
+          <div class="side side-right">
+            <div class="name-row">
+              <span class="combo" id="combo1"></span>
+              <b class="p-name" id="name1">CPU · 草薙 京</b>
+            </div>
+            <div class="hp hp-right"><i class="hp-ghost" id="hpGhost1"></i><i class="hp-fill" id="hp1"></i></div>
+            <div class="pips pips-right" id="pips1"><em></em><em></em></div>
+          </div>
+        </div>
+
+        <div class="banner" id="banner" hidden>
+          <b id="bannerMain">K.O.</b>
+          <span id="bannerSub"></span>
+        </div>
+
+        <div class="touch" id="touchPad">
+          <div class="pad pad-move">
+            <button type="button" data-key="left" aria-label="后退">◀</button>
+            <button type="button" data-key="right" aria-label="前进">▶</button>
+          </div>
+          <div class="pad pad-act">
+            <button type="button" data-key="block" aria-label="防御">防</button>
+            <button type="button" data-key="up" aria-label="跳跃">跳</button>
+            <button type="button" data-key="light" aria-label="轻拳">拳</button>
+            <button type="button" data-key="heavy" aria-label="重腿">腿</button>
+          </div>
+        </div>
+
+        <div class="overlay" id="menu">
+          <div class="sheet">
+            <p class="sheet-kicker">THE KING OF FIGHTERS</p>
+            <h2 class="sheet-title">拳皇</h2>
+            <p class="sheet-sub">草薙京 vs 草薙京 · 三局两胜，每回合 60 秒</p>
+
+            <div class="field">
+              <span class="label">对战模式</span>
+              <div class="seg" id="modeRow">
+                <button type="button" data-mode="cpu" class="is-on">人机对战</button>
+                <button type="button" data-mode="vs">同屏双人</button>
+              </div>
+              <p class="field-hint" id="modeHint">人机对战</p>
+            </div>
+
+            <div class="field">
+              <span class="label">电脑强度</span>
+              <div class="seg" id="diffRow">
+                <button type="button" data-diff="easy">初级</button>
+                <button type="button" data-diff="normal" class="is-on">中级</button>
+                <button type="button" data-diff="hard">高级</button>
+              </div>
+              <p class="field-hint" id="diffHint">电脑会攻防切换，练连招</p>
+            </div>
+
+            <button type="button" class="btn primary wide" id="startBtn">开始对战</button>
+            <p class="sheet-note" id="playHint">1P：A/D 移动、W 起跳、J 轻拳、K 重腿、L 防御；2P：方向键 + 1/2/3</p>
+          </div>
+        </div>
+
+        <div class="overlay" id="pausePanel" hidden>
+          <div class="sheet narrow">
+            <h2 class="sheet-title small">暂停</h2>
+            <div class="btn-col">
+              <button type="button" class="btn primary" id="resumeBtn">继续对战</button>
+              <button type="button" class="btn" id="restartBtn">重新开始</button>
+              <button type="button" class="btn ghost" id="quitBtn">返回菜单</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="overlay" id="result" hidden>
+          <div class="sheet">
+            <p class="sheet-kicker" id="resultSub">本场结束</p>
+            <h2 class="sheet-title" id="resultTitle">WINNER</h2>
+            <div class="stat-grid">
+              <div class="stat"><span>命中</span><b id="statHits">0</b></div>
+              <div class="stat"><span>总伤害</span><b id="statDamage">0</b></div>
+              <div class="stat"><span>格挡</span><b id="statBlocks">0</b></div>
+              <div class="stat"><span>最高连击</span><b id="statCombo">0</b></div>
+            </div>
+            <div class="btn-col">
+              <button type="button" class="btn primary" id="againBtn">再战一场</button>
+              <button type="button" class="btn ghost" id="menuBtn">返回菜单</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <section class="card">
+          <h3>操作</h3>
+          <ul class="keylist">
+            <li><kbd>A</kbd><kbd>D</kbd> 前后移动</li>
+            <li><kbd>W</kbd> 起跳（可跳跃攻击）</li>
+            <li><kbd>J</kbd> 轻拳 · <kbd>K</kbd> 重腿</li>
+            <li><kbd>L</kbd> 防御（伤害降到 15%）</li>
+            <li><kbd>Esc</kbd> 暂停</li>
+          </ul>
+          <p class="tip">双人：2P 用 ← → ↑ 与 <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>（小键盘或 , . /）。</p>
+        </section>
+
+        <section class="card">
+          <h3>战绩</h3>
+          <div class="stat-grid">
+            <div class="stat"><span>胜场</span><b id="recWins">0</b></div>
+            <div class="stat"><span>败场</span><b id="recLoses">0</b></div>
+            <div class="stat"><span>最高连击</span><b id="recCombo">0</b></div>
+            <div class="stat"><span>总场次</span><b id="recMatches">0</b></div>
+          </div>
+          <p class="tip">战绩保存在本机浏览器（localStorage）。</p>
+        </section>
+
+        <section class="card">
+          <h3>素材</h3>
+          <p class="tip">角色取自 <code>static/images/player/kyo/0~6.gif</code>（草薙京 7 套动作），
+            以 http 打开时用内置解码器逐帧绘制、按每帧可见边界贴地对齐；
+            直接双击打开时由浏览器原生播放 GIF 动画，同样能打。</p>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <script src="./logic.js"></script>
+  <script src="./game.js"></script>
+  <script type="module">
+    import { GIF } from './static/js/utils/gif.js';
+    window.KofGifDecoder = GIF;
+    window.dispatchEvent(new Event('kof:gif-ready'));
+  </script>
+</body>
+
+</html>

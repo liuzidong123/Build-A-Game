@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1410">
+<title>油画大师 · 名画填色与厚涂创作</title>
+<meta name="description" content="30 幅世界名画与练习画：分区填色、自由配色、厚涂笔刷与调色刀，攒星解锁专业道具。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app" data-view="gallery">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">🎨</span>
+      <div>
+        <h1>油画大师</h1>
+        <p class="brand-sub">名画填色 · 自由配色 · 厚涂创作</p>
+      </div>
+    </div>
+    <div class="stats">
+      <span class="stat"><b id="starStat">0</b> 星</span>
+      <span class="stat"><b id="propStat">1</b> 件道具</span>
+    </div>
+  </header>
+
+  <main class="gallery-view" id="galleryView">
+    <div class="gallery-head">
+      <div>
+        <h2>选一幅画，开始今天的颜色</h2>
+        <p id="galleryNote">前三幅直接开放，之后逐幅解锁；填得越像，星星越多。</p>
+      </div>
+      <div class="gallery-legend">
+        <span class="dot done"></span>已完成
+        <span class="dot open"></span>可画
+        <span class="dot locked"></span>未解锁
+      </div>
+    </div>
+
+    <div class="gallery" id="galleryGrid"></div>
+
+    <section class="props-panel">
+      <div class="group-head">
+        <h3>道具工坊</h3>
+        <span class="group-note" id="propNote">再得 4 星解锁调色刀</span>
+      </div>
+      <ul class="prop-list" id="propList"></ul>
+    </section>
+
+    <p class="tip">玩法：点分区上色，颜色越接近参考色，贴合度越高；填满即可完成，三星需要 82% 以上。完成后可在画室继续厚涂加工。</p>
+  </main>
+
+  <main class="studio-view" id="studioView" hidden>
+    <section class="canvas-area">
+      <div class="canvas-frame">
+        <div class="canvas-stack" id="canvasStack">
+          <svg class="artwork" id="artwork" viewBox="0 0 400 400" aria-label="画布"></svg>
+          <canvas class="paint-layer" id="paintLayer" width="800" height="800"></canvas>
+          <div class="glaze" id="glazeLayer"></div>
+        </div>
+        <div class="result" id="result" hidden>
+          <div class="result-card">
+            <p class="result-kicker">完成装裱</p>
+            <h2 class="result-stars" id="resultStars">☆☆☆</h2>
+            <p class="result-title" id="resultTitle">贴合度 0%</p>
+            <p class="result-copy" id="resultCopy"></p>
+            <div class="result-actions">
+              <button class="btn primary" id="nextBtn" type="button">下一幅</button>
+              <button class="btn" id="retryBtn" type="button">再画一次</button>
+              <button class="btn" id="resultGalleryBtn" type="button">回画廊</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="canvas-bar">
+        <button class="btn" id="refBtn" type="button">看参考</button>
+        <button class="btn" id="undoBtn" type="button">撤销</button>
+        <button class="btn" id="resetBtn" type="button">重画</button>
+        <button class="btn primary" id="doneBtn" type="button">完成这幅</button>
+      </div>
+      <p class="canvas-note" id="canvasNote">当前颜色 <b id="brushName">—</b>，点任意分区上色</p>
+    </section>
+
+    <aside class="panel">
+      <button class="back-btn" id="backBtn" type="button">← 回画廊</button>
+
+      <div class="art-meta">
+        <h2 id="artTitle">星月夜</h2>
+        <p class="art-artist" id="artArtist">梵高 · 1889</p>
+        <p class="art-hint" id="artHint"></p>
+      </div>
+
+      <div class="fit">
+        <div class="fit-head"><span>贴合度</span><b id="fitVal">0%</b></div>
+        <div class="fit-bar"><span id="fitBar"></span></div>
+        <div class="stars" id="starsVal">☆☆☆</div>
+        <p class="fit-note" id="fitNote">已上色 0 / 0 块</p>
+      </div>
+
+      <div class="group">
+        <span class="group-label">调色板</span>
+        <div class="palette" id="palette"></div>
+        <label class="color-pick">
+          <span>自定义</span>
+          <input type="color" id="colorInput" value="#c9a227" aria-label="自定义颜色">
+        </label>
+      </div>
+
+      <div class="group">
+        <span class="group-label">工具</span>
+        <div class="tools" id="toolRow"></div>
+        <p class="prop-hint" id="propHint"></p>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <span class="group-label">本关分区</span>
+          <span class="group-note" id="regionNote">0 / 0</span>
+        </div>
+        <div class="region-list" id="regionList"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">30 幅名画与练习画 · 分区填色 / 自由配色 / 厚涂笔刷 / 调色刀 / 金箔 / 罩染</footer>
+</div>
+
+<script src="artworks.js"></script>
+<script src="logic.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

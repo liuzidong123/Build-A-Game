@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交响乐工坊</title>
+<meta name="description" content="点顶部主谱（大谱表）写旋律，音符自动落进对应乐器的分谱并按音域伸缩；选择乐器分轨配器，按轻快、温柔、壮丽等情感调整音色，混音成一首属于自己的交响乐。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">🎼</span>
+    <div>
+      <strong>交响乐工坊</strong>
+      <small>写谱 · 配器 · 混音</small>
+    </div>
+  </div>
+  <div class="stats">
+    <span class="stat"><i>★</i><b id="starStat">0</b><em>/ 6</em></span>
+    <span class="stat"><i>🎻</i><b id="trackStat">0</b><em>轨</em></span>
+    <span class="stat"><i>♪</i><b id="noteStat">0</b><em>音</em></span>
+  </div>
+  <div class="top-actions">
+    <button type="button" id="demoBtn" class="ghost">示范曲</button>
+    <button type="button" id="saveBtn" class="ghost">保存</button>
+    <button type="button" id="exportBtn" class="ghost">导出</button>
+    <button type="button" id="clearBtn" class="ghost danger">清空</button>
+  </div>
+</header>
+
+<main class="workspace">
+  <section class="panel tracks-panel">
+    <div class="panel-head">
+      <h2>乐器轨</h2>
+      <small id="trackLimit">最多 8 条</small>
+    </div>
+    <div id="trackList" class="track-list"></div>
+    <button type="button" id="addTrackBtn" class="wide ghost">+ 添加乐器</button>
+    <div id="instrumentPicker" class="instrument-picker" hidden></div>
+
+    <div class="panel-head"><h2>混音台</h2><small>音量 / 声像 / 独奏</small></div>
+    <div id="mixer" class="mixer"></div>
+  </section>
+
+  <section class="panel score-panel">
+    <div class="score-toolbar">
+      <label class="title-field">曲名
+        <input id="titleInput" type="text" maxlength="40" value="未命名交响曲">
+      </label>
+      <div class="seg" role="group" aria-label="记谱方式">
+        <button type="button" id="staffBtn" class="seg-btn is-on">五线谱</button>
+        <button type="button" id="jianpuBtn" class="seg-btn">简谱</button>
+      </div>
+      <span class="toolbar-note">C 大调 · 4/4</span>
+    </div>
+
+    <div class="transport">
+      <button type="button" id="playBtn" class="play">▶ 播放</button>
+      <button type="button" id="stopBtn" title="停止并回到开头">■</button>
+      <button type="button" id="loopBtn" class="toggle">↻ 循环</button>
+      <button type="button" id="metroBtn" class="toggle" title="节拍器">🥠 节拍</button>
+      <label class="tempo-field">BPM <input id="tempoInput" type="number" min="40" max="208" step="1" value="138"></label>
+      <label class="bars-field">小节
+        <select id="barsSelect">
+          <option value="4">4</option>
+          <option value="8" selected>8</option>
+          <option value="12">12</option>
+          <option value="16">16</option>
+        </select>
+      </label>
+      <span id="playInfo" class="play-info">00:00 / 00:00</span>
+    </div>
+
+    <div class="score-wrap">
+      <div id="layerRail" class="layer-rail" aria-label="乐器分谱"></div>
+      <div id="scoreScroll" class="score-scroll">
+        <div id="scoreBoard" class="score-board is-staff">
+          <div id="scoreRuler" class="score-ruler"></div>
+          <div id="staffLayers" class="staff-layers"></div>
+          <div id="noteLayer" class="note-layer"></div>
+          <div id="hitLayer" class="hit-layer" title="点谱写音符，拖动音符改音高"></div>
+          <div id="playhead" class="playhead"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-bar">
+      <div id="durationRow" class="durations"></div>
+      <button type="button" id="sharpBtn" class="toggle" title="写升号，或切换选中音符的升降号">♯ 升号</button>
+      <button type="button" id="pitchUpBtn" title="选中音符升高半音（↑，Shift 为八度）">▲</button>
+      <button type="button" id="pitchDownBtn" title="选中音符降低半音（↓，Shift 为八度）">▼</button>
+      <button type="button" id="delNoteBtn" title="删除选中音符（Delete）">🗑 删除</button>
+      <button type="button" id="eraserBtn" class="toggle" title="点击音符删除">🧽 橡皮</button>
+      <span id="editorHint" class="editor-hint">点当前谱表写音符</span>
+    </div>
+    <div class="score-foot">
+      <span id="cursorInfo">第 1 小节</span>
+      <span id="scoreMeta" class="score-meta"></span>
+    </div>
+  </section>
+
+  <section class="panel mood-panel">
+    <div class="panel-head"><h2>情感</h2><small>一键换音色</small></div>
+    <div id="emotionList" class="emotion-list"></div>
+
+    <div class="panel-head"><h2>音色微调</h2><small>细调明暗与空间</small></div>
+    <div class="tweaks">
+      <label>明亮度 <output id="brightOut">0</output>
+        <input id="brightInput" type="range" min="-100" max="100" step="1" value="0">
+      </label>
+      <label>混响 <output id="reverbOut">0</output>
+        <input id="reverbInput" type="range" min="-35" max="100" step="1" value="0">
+      </label>
+      <label>揉弦 <output id="vibratoOut">0</output>
+        <input id="vibratoInput" type="range" min="0" max="100" step="1" value="0">
+      </label>
+    </div>
+
+    <div class="panel-head"><h2>乐章任务</h2><small id="taskStars">0 / 6</small></div>
+    <ul id="taskList" class="task-list"></ul>
+  </section>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-card">
+    <header><strong id="modalTitle">示范曲</strong>
+      <button type="button" id="modalClose" aria-label="关闭">✕</button>
+    </header>
+    <div id="modalBody" class="modal-body"></div>
+  </div>
+</div>
+
+<script src="logic.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
